@@ -1,0 +1,175 @@
+# ORICAL V3 Roadmap
+
+## Version Lineage
+- V1: Daily Summary
+- V2: Orical (Python/Tkinter)
+- V3: Full production app (Mac-first)
+
+## V3 Goal
+Build Orical into a stable, modular command center app that feels native on macOS, supports long-term growth, and can later expand to other platforms.
+
+## Primary Product Pillars
+1. Daily Intelligence
+- Unified feed for world news, local context, market signals, and "On This Day" history.
+- Fast summaries with source links.
+
+2. System Awareness
+- Live RAM, storage, Wi-Fi bars and status.
+- Background refresh with resilient fallbacks.
+
+3. Radio
+- Global station search, presets, favorites, instant play.
+- Recover playback state on relaunch.
+
+4. AI Operator
+- Text-first command bar to run actions across modules.
+- Examples: "summarize today", "play preset 3", "show system risk", "build daily brief".
+
+5. Mission Control UX
+- Fast startup, clear navigation, and reliable background behavior.
+
+## Technical Direction (Recommended)
+Mac-first native rewrite:
+- UI: SwiftUI (+ AppKit bridge only where needed)
+- Storage: SwiftData (SQLite under the hood)
+- Networking: URLSession + structured async tasks
+- Audio: AVFoundation
+- Maps/Globe: MapKit globe mode + custom overlays
+- AI: OpenAI API integration through a service layer
+- Logging/Telemetry: Unified logger with local rolling logs
+
+Why this direction:
+- Native permissions and startup behavior are cleaner than Tkinter.
+- Better performance and packaging for a real desktop app.
+- Easier long-term maintenance than a single-file Python GUI.
+
+## Proposed Project Structure
+```text
+OricalV3/
+  App/
+    OricalApp.swift
+    AppRouter.swift
+    AppState.swift
+  Features/
+    Dashboard/
+    SystemStatus/
+    Radio/
+    Timeline/
+    Assistant/
+    Settings/
+  Core/
+    UI/
+    Theme/
+    Networking/
+    Logging/
+    Scheduling/
+  Data/
+    Models/
+    Persistence/
+    Repositories/
+  Integrations/
+    NewsFeeds/
+    WeatherAir/
+    Markets/
+    OpenAI/
+    SystemInfo/
+    RadioDirectory/
+  Resources/
+    Assets.xcassets
+    Presets/
+  Tests/
+    Unit/
+    Integration/
+    UITests/
+```
+
+## 4-Phase Delivery Plan
+## Phase 0: Foundation (Week 1-2)
+Deliverables:
+- Xcode project scaffold with module boundaries.
+- Navigation shell and theme tokens.
+- Data model and repository interfaces.
+- Local persistence wired (settings, presets, cache).
+
+Exit criteria:
+- App launches in <2s on a normal Mac.
+- Navigation and persistence are stable.
+
+## Phase 1: Core Feature Parity (Week 3-6)
+Deliverables:
+- System panel (RAM/storage/Wi-Fi with bars).
+- Radio presets/favorites/search/playback.
+- Daily feed ingestion + normalized article model.
+- Baseline dashboard cards.
+
+Exit criteria:
+- All V2 core features available in V3.
+- No hard crash in 24h soak test.
+
+## Phase 2: Intelligence Layer (Week 7-10)
+Deliverables:
+- "On This Day" historical timeline section.
+- Assistant command bar with action dispatch.
+- Daily briefing generator (structured sections).
+- Confidence/risk scoring for signals.
+
+Exit criteria:
+- User can run end-to-end workflow from one command.
+- Briefing quality and reliability acceptable for daily use.
+
+## Phase 3: Productionization (Week 11-14)
+Deliverables:
+- Error handling, retry, offline degradation paths.
+- Telemetry/log viewer and diagnostics bundle.
+- Packaging/signing/notarization preparation.
+- Regression test suite and release checklist.
+
+Exit criteria:
+- Beta-ready build shared with migration path from V2.
+
+## V2 to V3 Migration Plan
+Data to migrate:
+- `settings.json` values
+- Radio favorites/presets
+- Cached note/history items (if retained)
+
+Migration strategy:
+1. On first launch, detect V2 data files.
+2. Run one-time importer into V3 models.
+3. Write migration report to local logs.
+4. Keep original files untouched for rollback.
+
+## Quality Gates
+- Crash-free session target: >99%
+- UI response target: key interactions <100ms perceived latency
+- Feed refresh target: complete within 5-10s on normal connection
+- Test coverage target: critical paths fully covered
+
+## Known Risks and Mitigations
+1. API instability / rate limits
+- Mitigation: caching, backoff, and fallback providers.
+
+2. Background task reliability
+- Mitigation: central scheduler and observable job states.
+
+3. Scope creep
+- Mitigation: strict phase gates and versioned feature flags.
+
+## V3.0 Scope Lock (What ships first)
+- Dashboard, System, Radio, Timeline, Assistant command bar, Settings.
+
+Not in V3.0:
+- Cross-platform desktop/mobile ports.
+- Voice control (defer until native permissions + UX are production-ready).
+
+## Immediate Sprint (Next 7 Days)
+1. Create `OricalV3` Xcode project and module folders.
+2. Implement app shell, routing, and theme system.
+3. Port System Status module first (small and measurable).
+4. Port Radio module second (presets + playback + favorites).
+5. Stand up integration service interfaces (news/markets/weather/AI stubs).
+
+## Success Definition for V3 Launch
+- Replaces V2 for daily personal use.
+- Stable startup and background refresh behavior.
+- Clear upgrade path and maintainable codebase.
